@@ -54,6 +54,7 @@ class _ContactListState extends State<ContactList> {
         title: Text('Contatos'),
         centerTitle: true,
       ),
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Expanded(
@@ -144,55 +145,58 @@ class _ContactListState extends State<ContactList> {
     // configura o  AlertDialog
     AlertDialog alerta = AlertDialog(
       title: Text("Novo Contato"),
-      content: Container(
-        width: 500,
-        height: 300,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _nomeController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: 'Nome da pessoa',
-                labelText: 'Nome',
-                counterText: "",
+      content: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          width: 500,
+          height: 250,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _nomeController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: 'Nome da pessoa',
+                  labelText: 'Nome',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
               ),
-              style: TextStyle(
-                fontSize: 18.0,
+              TextField(
+                controller: _agenciaController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: '0000',
+                  labelText: 'Agencia',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                keyboardType: TextInputType.number,
               ),
-            ),
-            TextField(
-              controller: _agenciaController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '0000',
-                labelText: 'Agencia',
-                counterText: "",
+              TextField(
+                controller: _contaController,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: '00000-0',
+                  labelText: 'Conta',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _contaController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '00000-0',
-                labelText: 'Conta',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [
@@ -253,55 +257,60 @@ class _ContactListState extends State<ContactList> {
     // configura o  AlertDialog
     AlertDialog alerta = AlertDialog(
       title: Text("Alterar Contato"),
-      content: Container(
-        width: 500,
-        height: 300,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _ncontroller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: 'Nome da pessoa',
-                labelText: 'Nome',
-                counterText: "",
+      content: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Container(
+          width: 500,
+          height: 250,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _ncontroller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: 'Nome da pessoa',
+                  labelText: 'Nome',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                enableSuggestions: false,
+                keyboardType: TextInputType.text,
               ),
-              style: TextStyle(
-                fontSize: 18.0,
+              TextField(
+                controller: _acontroller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: '0000',
+                  labelText: 'Agencia',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                keyboardType: TextInputType.number,
               ),
-            ),
-            TextField(
-              controller: _acontroller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '0000',
-                labelText: 'Agencia',
-                counterText: "",
+              TextField(
+                controller: _ccontroller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.indigo)),
+                  hintText: '00000-0',
+                  labelText: 'Conta',
+                  counterText: "",
+                ),
+                style: TextStyle(
+                  fontSize: 18.0,
+                ),
+                keyboardType: TextInputType.number,
               ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            TextField(
-              controller: _ccontroller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '00000-0',
-                labelText: 'Conta',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       actions: [
