@@ -76,16 +76,23 @@ class _TransferListState extends State<TransferList> {
                                 style: TextStyle(fontSize: 24)),
                             subtitle: Text("Valor: ${items[index].valor}",
                                 style: TextStyle(fontSize: 20)),
-                            leading: Column(
+                            leading: Icon(
+                              Icons.attach_money,
+                              color: Colors.green,
+                              size: 42.0
+                            ),
+                            trailing:Column(
                               children: [
                                 IconButton(
-                                    icon: const Icon(Icons.delete_forever),
+                                    icon: const Icon(Icons.delete_forever,
+                                      color: Colors.red,
+                                      size:24.0,),
                                     onPressed: () => {
-                                          deleteTransfer(
-                                              context, documentos[index], index)
-                                        })
+                                      deleteTransfer(
+                                          context, documentos[index], index)
+                                    })
                               ],
-                            ),
+                            ) ,
                             onTap: () => {
                               modifyContact(
                                 context,
@@ -105,7 +112,7 @@ class _TransferListState extends State<TransferList> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.group_add),
+        child: Icon(Icons.note_add),
         onPressed: () => newTransfer(),
       ),
     );

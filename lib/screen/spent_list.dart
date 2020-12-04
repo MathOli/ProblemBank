@@ -76,14 +76,21 @@ class _SpentListState extends State<SpentList> {
                                 style: TextStyle(fontSize: 24)),
                             subtitle: Text("Valor: ${items[index].valor}",
                                 style: TextStyle(fontSize: 20)),
-                            leading: Column(
+                            leading: Icon(
+                              Icons.desktop_windows,
+                              color: Colors.indigo,
+                              size: 42.0
+                            ),
+                            trailing: Column(
                               children: [
                                 IconButton(
-                                    icon: const Icon(Icons.delete_forever),
+                                    icon: const Icon(Icons.delete_forever,
+                                    color: Colors.red,
+                                    size: 24.0),
                                     onPressed: () => {
-                                          deleteTransfer(
-                                              context, documentos[index], index)
-                                        })
+                                      deleteTransfer(
+                                          context, documentos[index], index)
+                                    })
                               ],
                             ),
                             onTap: () => {

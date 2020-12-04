@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problembank/model/contact_model.dart';
+import 'package:problembank/enum/choice.dart';
 
 class ContactList extends StatefulWidget {
   @override
@@ -80,14 +81,21 @@ class _ContactListState extends State<ContactList> {
                             subtitle: Text(
                                 "Ag: ${items[index].agencia}/Cc: ${items[index].conta}",
                                 style: TextStyle(fontSize: 20)),
-                            leading: Column(
+                            leading: Icon(
+                              Icons.person,
+                              color: Colors.indigo,
+                              size: 42.0,
+                            ),
+                            trailing: Column(
                               children: [
                                 IconButton(
-                                    icon: const Icon(Icons.delete_forever),
+                                    icon: const Icon(Icons.delete_forever,
+                                    color: Colors.red,
+                                    size:24.0,),
                                     onPressed: () => {
-                                          deleteContact(
-                                              context, documentos[index], index)
-                                        })
+                                      deleteContact(
+                                          context, documentos[index], index)
+                                    })
                               ],
                             ),
                             onTap: () => {
@@ -325,4 +333,5 @@ class _ContactListState extends State<ContactList> {
       },
     );
   }
+
 }
