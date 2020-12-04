@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problembank/model/contact_model.dart';
-import 'package:problembank/enum/choice.dart';
 
 class ContactList extends StatefulWidget {
   @override
@@ -12,7 +11,7 @@ class ContactList extends StatefulWidget {
 }
 
 class _ContactListState extends State<ContactList> {
-  final TextEditingController _nomeController = TextEditingController();
+  TextEditingController _nomeController = TextEditingController();
   final TextEditingController _agenciaController = TextEditingController();
   final TextEditingController _contaController = TextEditingController();
 
@@ -73,7 +72,7 @@ class _ContactListState extends State<ContactList> {
                   List<DocumentSnapshot> documentos = snapshot.data.docs;
                   return ListView.builder(
                       itemCount: documentos.length,
-                      itemBuilder: (_, index) {
+                      itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
                             title: Text(items[index].nome,
@@ -93,7 +92,7 @@ class _ContactListState extends State<ContactList> {
                                     color: Colors.red,
                                     size:24.0,),
                                     onPressed: () => {
-                                      deleteContact(
+                              deleteContact(
                                           context, documentos[index], index)
                                     })
                               ],
@@ -128,9 +127,10 @@ class _ContactListState extends State<ContactList> {
 
   void deleteContact(
       BuildContext context, DocumentSnapshot doc, int posicao) async {
-    db.collection("contactlist").doc(doc.id).delete();
+    await db.collection("contactlist").doc(doc.id).delete();
     setState(() {
       items.removeAt(posicao);
+
     });
   }
 
@@ -226,6 +226,10 @@ class _ContactListState extends State<ContactList> {
       "conta": contact.conta,
       "agencia": contact.agencia,
     });
+
+    _nomeController.text = '';
+    _contaController.text = '';
+    _agenciaController.text = '';
 
     Navigator.of(context).pop();
     SystemChannels.textInput.invokeListMethod('TextInput.hide');

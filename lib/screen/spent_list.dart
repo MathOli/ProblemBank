@@ -112,7 +112,7 @@ class _SpentListState extends State<SpentList> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.group_add),
+        child: Icon(Icons.add),
         onPressed: () => newTransfer(),
       ),
     );
