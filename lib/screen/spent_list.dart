@@ -4,6 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problembank/model/spent_model.dart';
+import 'package:problembank/screen/dashboard.dart';
+import 'package:problembank/screen/transfer_list.dart';
+
+import 'contact_list.dart';
 
 class SpentList extends StatefulWidget {
   @override
@@ -77,11 +81,13 @@ class _SpentListState extends State<SpentList> {
                             subtitle: Text("Valor: ${items[index].valor}",
                                 style: TextStyle(fontSize: 20)),
                             leading: Icon(
-                              Icons.desktop_windows,
+                              Icons.monetization_on,
                               color: Colors.indigo,
                               size: 42.0
                             ),
                             trailing: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 IconButton(
                                     icon: const Icon(Icons.delete_forever,
@@ -90,7 +96,7 @@ class _SpentListState extends State<SpentList> {
                                     onPressed: () => {
                                       deleteTransfer(
                                           context, documentos[index], index)
-                                    })
+                                    }),
                               ],
                             ),
                             onTap: () => {
@@ -115,6 +121,44 @@ class _SpentListState extends State<SpentList> {
         child: Icon(Icons.add),
         onPressed: () => newTransfer(),
       ),
+      bottomNavigationBar: BottomAppBar(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.dashboard),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Dashboard(),
+                      ));
+                    }
+                ),
+                IconButton(
+                    icon: Icon(Icons.sticky_note_2),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => TransferList(),
+                      ));
+                    }
+                ),
+                IconButton(
+                    icon: Icon(Icons.contact_page),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ContactList(),
+                      ));
+                    }
+                )
+              ]
+          )
+      ),
     );
   }
 
@@ -123,6 +167,11 @@ class _SpentListState extends State<SpentList> {
   }
 
   void newTransfer() {
+
+    String nomeCidade="";
+    var cidades =['Santos','Porto Alegre','Campinas','Rio de Janeiro'];
+    var itemSelecionado = 'Santos';
+
     Widget createButton = FlatButton(
       child: Text("Adicionar"),
       onPressed: () => createTransfer(

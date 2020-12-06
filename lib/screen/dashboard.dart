@@ -38,7 +38,7 @@ class Dashboard extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Icon(
-                                  Icons.people,
+                                  Icons.contact_page,
                                   color: Colors.white,
                                   size: 32.0,
                                 ),

@@ -4,6 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problembank/model/contact_model.dart';
+import 'package:problembank/screen/dashboard.dart';
+import 'package:problembank/screen/spent_list.dart';
+import 'package:problembank/screen/transfer_list.dart';
 
 class ContactList extends StatefulWidget {
   @override
@@ -117,6 +120,44 @@ class _ContactListState extends State<ContactList> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.group_add),
         onPressed: () => newContact(),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            IconButton(
+                icon: Icon(Icons.dashboard),
+                color: Colors.indigo,
+                iconSize: 50.0,
+              onPressed: (){
+            Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => Dashboard(),
+            ));
+            }
+            ),
+            IconButton(
+                icon: Icon(Icons.sticky_note_2),
+                color: Colors.indigo,
+                iconSize: 50.0,
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => TransferList(),
+                  ));
+                }
+            ),
+            IconButton(
+                icon: Icon(Icons.attach_money),
+                color: Colors.indigo,
+                iconSize: 50.0,
+                onPressed: (){
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => SpentList(),
+                  ));
+                }
+            )
+          ]
+        )
       ),
     );
   }

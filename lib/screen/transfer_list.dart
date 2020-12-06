@@ -4,6 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:problembank/model/transfer_model.dart';
+import 'package:problembank/screen/spent_list.dart';
+
+import 'contact_list.dart';
+import 'dashboard.dart';
 
 class TransferList extends StatefulWidget {
   @override
@@ -114,6 +118,44 @@ class _TransferListState extends State<TransferList> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.note_add),
         onPressed: () => newTransfer(),
+      ),
+      bottomNavigationBar: BottomAppBar(
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.dashboard),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => Dashboard(),
+                      ));
+                    }
+                ),
+                IconButton(
+                    icon: Icon(Icons.contact_page),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => ContactList(),
+                      ));
+                    }
+                ),
+                IconButton(
+                    icon: Icon(Icons.attach_money),
+                    color: Colors.indigo,
+                    iconSize: 50.0,
+                    onPressed: (){
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SpentList(),
+                      ));
+                    }
+                )
+              ]
+          )
       ),
     );
   }
