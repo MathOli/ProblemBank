@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:problembank/model/contact_model.dart';
 import 'package:problembank/screen/dashboard.dart';
 import 'package:problembank/screen/spent_list.dart';
 import 'package:problembank/screen/transfer_list.dart';
+import 'package:problembank/component/contact/newContact.dart';
+import 'package:problembank/component/contact/modifyContact.dart';
+import 'package:problembank/component/contact/deleteContact.dart';
 
 class ContactList extends StatefulWidget {
   @override
@@ -14,13 +16,8 @@ class ContactList extends StatefulWidget {
 }
 
 class _ContactListState extends State<ContactList> {
-  TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _agenciaController = TextEditingController();
-  final TextEditingController _contaController = TextEditingController();
 
-  TextEditingController _ncontroller;
-  TextEditingController _ccontroller;
-  TextEditingController _acontroller;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Contact> items;
 
@@ -52,6 +49,7 @@ class _ContactListState extends State<ContactList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text('Contatos'),
@@ -78,8 +76,17 @@ class _ContactListState extends State<ContactList> {
                       itemBuilder: (context, index) {
                         return Card(
                           child: ListTile(
-                            title: Text(items[index].nome,
-                                style: TextStyle(fontSize: 24)),
+                            title: RichText(
+                              text: TextSpan(
+                                style: DefaultTextStyle.of(context).style,
+                                children: <TextSpan>[
+                                  TextSpan(text: items[index].nome, style: TextStyle(fontSize: 24)),
+                                  TextSpan(text: " (${items[index].banco})", style: TextStyle(fontSize: 16, color: Colors.grey))
+                                ],
+                              ),
+                            ),
+//                            Text(items[index].nome,
+//                                style: TextStyle(fontSize: 24)),
                             subtitle: Text(
                                 "Ag: ${items[index].agencia}/Cc: ${items[index].conta}",
                                 style: TextStyle(fontSize: 20)),
@@ -101,13 +108,15 @@ class _ContactListState extends State<ContactList> {
                               ],
                             ),
                             onTap: () => {
-                              modifyContact(
-                                  context,
+                            modifyContanct(
+                              _scaffoldKey.currentContext ,
                                   Contact(
                                       items[index].id,
                                       items[index].nome,
                                       items[index].conta,
-                                      items[index].agencia)),
+                                      items[index].agencia,
+                            items[index].banco )
+                            )
                             },
                           ),
                         );
@@ -119,7 +128,7 @@ class _ContactListState extends State<ContactList> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.group_add),
-        onPressed: () => newContact(),
+        onPressed: () => newContact(context),
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
@@ -164,219 +173,6 @@ class _ContactListState extends State<ContactList> {
 
   Stream<QuerySnapshot> getContactsList() {
     return FirebaseFirestore.instance.collection("contactlist").snapshots();
-  }
-
-  void deleteContact(
-      BuildContext context, DocumentSnapshot doc, int posicao) async {
-    await db.collection("contactlist").doc(doc.id).delete();
-    setState(() {
-      items.removeAt(posicao);
-
-    });
-  }
-
-  void newContact() {
-    Widget createButton = FlatButton(
-      child: Text("Adicionar"),
-      onPressed: () => createContact(
-          context,
-          Contact(null, _nomeController.text, _contaController.text,
-              _agenciaController.text)),
-    );
-
-    Widget cancelButton = FlatButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // configura o  AlertDialog
-    AlertDialog alerta = AlertDialog(
-      title: Text("Novo Contato"),
-      content: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          width: 500,
-          height: 250,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _nomeController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: 'Nome da pessoa',
-                  labelText: 'Nome',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-              ),
-              TextField(
-                controller: _agenciaController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: '0000',
-                  labelText: 'Agencia',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: _contaController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: '00000-0',
-                  labelText: 'Conta',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        createButton,
-        cancelButton,
-      ],
-    );
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alerta;
-      },
-    );
-  }
-
-  void createContact(BuildContext context, Contact contact) async {
-    await db.collection("contactlist").doc(contact.id).set({
-      "nome": contact.nome,
-      "conta": contact.conta,
-      "agencia": contact.agencia,
-    });
-
-    _nomeController.text = '';
-    _contaController.text = '';
-    _agenciaController.text = '';
-
-    Navigator.of(context).pop();
-    SystemChannels.textInput.invokeListMethod('TextInput.hide');
-  }
-
-  void changeContact(BuildContext context, Contact contact) async {
-    await db.collection("contactlist").doc(contact.id).set({
-      "nome": contact.nome,
-      "conta": contact.conta,
-      "agencia": contact.agencia,
-    });
-
-    Navigator.of(context).pop();
-    SystemChannels.textInput.invokeListMethod('TextInput.hide');
-  }
-
-  void modifyContact(BuildContext context, Contact contact) {
-    _ncontroller = new TextEditingController(text: contact.nome);
-    _ccontroller = new TextEditingController(text: contact.conta);
-    _acontroller = new TextEditingController(text: contact.agencia);
-
-    Widget modifyButton = FlatButton(
-        child: Text("Salvar"),
-        onPressed: () => changeContact(
-              context,
-              Contact(contact.id, _ncontroller.text, _ccontroller.text,
-                  _acontroller.text),
-            ));
-
-    Widget cancelButton = FlatButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // configura o  AlertDialog
-    AlertDialog alerta = AlertDialog(
-      title: Text("Alterar Contato"),
-      content: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Container(
-          width: 500,
-          height: 250,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: _ncontroller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: 'Nome da pessoa',
-                  labelText: 'Nome',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                enableSuggestions: false,
-                keyboardType: TextInputType.text,
-              ),
-              TextField(
-                controller: _acontroller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: '0000',
-                  labelText: 'Agencia',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: _ccontroller,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.indigo)),
-                  hintText: '00000-0',
-                  labelText: 'Conta',
-                  counterText: "",
-                ),
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
-                keyboardType: TextInputType.number,
-              ),
-            ],
-          ),
-        ),
-      ),
-      actions: [
-        modifyButton,
-        cancelButton,
-      ],
-    );
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alerta;
-      },
-    );
   }
 
 }

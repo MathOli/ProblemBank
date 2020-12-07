@@ -3,6 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:problembank/component/transfer/deleteTransfer.dart';
+import 'package:problembank/component/transfer/modifyTransfer.dart';
+import 'package:problembank/component/transfer/newTransfer.dart';
 import 'package:problembank/model/transfer_model.dart';
 import 'package:problembank/screen/spent_list.dart';
 
@@ -15,11 +18,6 @@ class TransferList extends StatefulWidget {
 }
 
 class _TransferListState extends State<TransferList> {
-  final TextEditingController _nomeController = TextEditingController();
-  final TextEditingController _valorController = TextEditingController();
-
-  TextEditingController _ncontroller;
-  TextEditingController _vcontroller;
 
   List<Transfer> items;
 
@@ -98,7 +96,7 @@ class _TransferListState extends State<TransferList> {
                               ],
                             ) ,
                             onTap: () => {
-                              modifyContact(
+                              modifyTransfer(
                                 context,
                                 Transfer(
                                   items[index].id,
@@ -117,7 +115,7 @@ class _TransferListState extends State<TransferList> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.note_add),
-        onPressed: () => newTransfer(),
+        onPressed: () => newTransfer(context),
       ),
       bottomNavigationBar: BottomAppBar(
           child: Row(
@@ -164,179 +162,5 @@ class _TransferListState extends State<TransferList> {
     return FirebaseFirestore.instance.collection("transferlist").snapshots();
   }
 
-  void newTransfer() {
-    Widget createButton = FlatButton(
-      child: Text("Adicionar"),
-      onPressed: () => createTransfer(
-          context,
-          Transfer(
-            null,
-            _nomeController.text,
-            _valorController.text,
-          )),
-    );
 
-    Widget cancelButton = FlatButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // configura o  AlertDialog
-    AlertDialog alerta = AlertDialog(
-      title: Text("Nova Transferencia"),
-      content: Container(
-        width: 500,
-        height: 250,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _nomeController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: 'Nome da Pessoa',
-                labelText: 'Nome',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
-            TextField(
-              controller: _valorController,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '000.00',
-                labelText: 'Valor',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        createButton,
-        cancelButton,
-      ],
-    );
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alerta;
-      },
-    );
-  }
-
-  void createTransfer(BuildContext context, Transfer transfer) async {
-    await db.collection("transferlist").doc(transfer.id).set({
-      "nome": transfer.nome,
-      "valor": transfer.valor,
-    });
-
-    Navigator.of(context).pop();
-    SystemChannels.textInput.invokeListMethod('TextInput.hide');
-  }
-
-  void deleteTransfer(
-      BuildContext context, DocumentSnapshot doc, int posicao) async {
-    await db.collection("transferlist").doc(doc.id).delete();
-    setState(() {
-      items.removeAt(posicao);
-      Navigator.of(context).pop();
-    });
-  }
-
-  void changeContact(BuildContext context, Transfer transfer) async {
-    await db.collection("transferlist").doc(transfer.id).set({
-      "nome": transfer.nome,
-      "valor": transfer.valor,
-    });
-
-    Navigator.of(context).pop();
-    SystemChannels.textInput.invokeListMethod('TextInput.hide');
-  }
-
-  void modifyContact(BuildContext context, Transfer transfer) {
-    _ncontroller = new TextEditingController(text: transfer.nome);
-    _vcontroller = new TextEditingController(text: transfer.valor);
-
-    Widget modifyButton = FlatButton(
-        child: Text("Salvar"),
-        onPressed: () => changeContact(
-              context,
-              Transfer(
-                transfer.id,
-                _ncontroller.text,
-                _vcontroller.text,
-              ),
-            ));
-
-    Widget cancelButton = FlatButton(
-      child: Text("Cancelar"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-
-    // configura o  AlertDialog
-    AlertDialog alerta = AlertDialog(
-      title: Text("Alterar Transferencia"),
-      content: Container(
-        width: 500,
-        height: 250,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: _ncontroller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: 'Nome da Pessoa',
-                labelText: 'Nome',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
-            TextField(
-              controller: _vcontroller,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.indigo)),
-                hintText: '000.00',
-                labelText: 'Valor',
-                counterText: "",
-              ),
-              style: TextStyle(
-                fontSize: 18.0,
-              ),
-              keyboardType: TextInputType.number,
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        modifyButton,
-        cancelButton,
-      ],
-    );
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alerta;
-      },
-    );
-  }
 }
